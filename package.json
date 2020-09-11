@@ -1,0 +1,43 @@
+{
+  "name": "cloud-explorer",
+  "version": "1.0.0",
+  "description": "An express server that acts as a file explorer for local files on the server",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack && node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dtcan/cloud-explorer.git"
+  },
+  "author": "David Canagasabey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dtcan/cloud-explorer/issues"
+  },
+  "homepage": "https://github.com/dtcan/cloud-explorer#readme",
+  "dependencies": {
+    "bootstrap": "^4.5.2",
+    "express": "^4.17.1",
+    "mime-types": "^2.1.27",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
+    "autoprefixer": "^9.8.6",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^4.3.0",
+    "html-loader": "^1.3.0",
+    "html-webpack-plugin": "^4.4.1",
+    "mini-css-extract-plugin": "^0.11.1",
+    "node-sass": "^4.14.1",
+    "postcss-loader": "^4.0.1",
+    "sass-loader": "^10.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
