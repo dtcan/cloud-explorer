@@ -80,7 +80,7 @@ function getTruePath(pathInput) {
             var subdir = pathInput.substring(sep + 1);
             var pathData = paths[index];
             if(pathData) {
-                var path = pathData.path || "/";
+                var path = pathData.path.replace(/\\/g, "/") || "/";
                 if(path[path.length - 1] != "/") {
                     path += "/";
                 }
