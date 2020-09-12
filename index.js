@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.get("/", (req, res) => {
-    fs.readFile("./dist/index.html", (err, data) => {
+    fs.readFile("./dist/index.html", "utf-8", (err, data) => {
         if(err) {
             console.log(err);
             res.status(500).end("Error: Could not load page");
@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/dir/*", (req, res) => {
-    fs.readFile("./dist/dir.html", (err, data) => {
+    fs.readFile("./dist/dir.html", "utf-8", (err, data) => {
         if(err) {
             console.log(err);
             res.setHeader('Content-Type', 'text/plain');
