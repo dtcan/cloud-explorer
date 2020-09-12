@@ -36,20 +36,12 @@ app.get("/dir/*", (req, res) => {
 });
 
 app.get("/file/*", (req, res) => {
-    fs.readFile("./dist/dir.html", (err, data) => {
-        if(err) {
-            console.log(err);
-            res.setHeader('Content-Type', 'text/plain');
-            res.status(500).end("Error: Could not load page");
-        }else {
-            files.getFile(req.path).then(file => {
-                res.setHeader('Content-Type', file.type);
-                res.end(file.data);
-            }).catch(err => {
-                res.setHeader('Content-Type', 'text/plain');
-                res.status(err.statusCode || 500).end(err.message || "Unknown error");
-            });
-        }
+    files.getFile(req.path).then(file => {
+        res.setHeader('Content-Type', file.type);
+        res.end(file.data);
+    }).catch(err => {
+        res.setHeader('Content-Type', 'text/plain');
+        res.status(err.statusCode || 500).end(err.message || "Unknown error");
     });
 });
 
