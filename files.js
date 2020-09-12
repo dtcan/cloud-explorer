@@ -41,7 +41,7 @@ exports.getDirectory = (reqPath) => {
                         console.log(err);
                         reject({ statusCode: 500, message: "Could not load directory" });
                     }else {
-                        var dir = { name: dirName, type: "general", directories: [], files: [] };
+                        var dir = { path: pathInput.substring(0, pathInput.length - 1), name: dirName, type: "general", directories: [], files: [] };
                         var total = 0;
                         var typeTotals = {};
                         for(let file of files) {

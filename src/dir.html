@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <base href="/">
         <title>Cloud Explorer</title>
+        <base href="/">
         <meta charset="UTF-8">
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
         <script>
             const directory = JSON.parse("{{ dir }}");
         </script>
     </head>
     <body>
-        <h1 id="name"></h1>
-        <h3>Directories</h3>
-        <ul id="dir-list"></ul>
-        <br />
-        <h3>Files</h3>
-        <ul id="file-list"></ul>
+        <div id="app"></div>
     </body>
 </html>

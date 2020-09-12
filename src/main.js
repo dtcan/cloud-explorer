@@ -1,11 +1,18 @@
 import React from "react";
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Icon, IconButton, Toolbar, Typography } from "@material-ui/core";
 
 export class Header extends React.Component {
     render() {
         return <>
             <AppBar position="fixed">
                 <Toolbar>
+                    {
+                        this.props.back ?
+                        <IconButton edge="start" color="inherit" component="a" href={this.props.back}>
+                            <Icon>arrow_back</Icon>
+                        </IconButton> :
+                        <></>
+                    }
                     <Typography variant="h6">{this.props.title}</Typography>
                 </Toolbar>
             </AppBar>
