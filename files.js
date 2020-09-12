@@ -4,6 +4,9 @@ const mime = require("mime-types");
 const rawJSON = fs.readFileSync("./paths.json");
 const paths = rawJSON ? JSON.parse(rawJSON) : undefined;
 
+const IGNORE = /.*\.ini/;
+const TYPE_THRESHOLD = 0.9;
+
 exports.getDirectory = (reqPath) => {
     return new Promise((resolve, reject) => {
         if(paths) {
@@ -20,7 +23,9 @@ exports.getDirectory = (reqPath) => {
                         console.log(err);
                         reject({ statusCode: 500, message: "Could not load directory" });
                     }else {
-                        var dir = { directories: [], files: [] };
+                        var dir = { type: "general", directories: [], files: [] };
+                        var total = 0;
+                        var typeTotals = {};
                         for(let file of files) {
                             if(file.isDirectory()) {
                                 dir.directories.push({
@@ -28,12 +33,22 @@ exports.getDirectory = (reqPath) => {
                                     name: file.name,
                                     type: "directory"
                                 });
-                            }else {
+                            }else if(file.isFile() && !IGNORE.test(file.name)) {
+                                var type = mime.lookup(file.name);
+                                var dirType = type ? type.substring(0, type.indexOf("/")) : "general";
+                                total++;
+                                typeTotals[dirType] = (typeTotals[dirType] || 0) + 1;
                                 dir.files.push({
                                     path: "/file/" + pathInput + file.name,
                                     name: file.name,
-                                    type: mime.lookup(file.name) || "application/octet-stream"
+                                    type: type || "application/octet-stream"
                                 });
+                            }
+                        }
+                        for(let dirType in typeTotals) {
+                            if(dirType != "application" && typeTotals[dirType] / total >= TYPE_THRESHOLD) {
+                                dir.type = dirType;
+                                break;
                             }
                         }
                         resolve(dir);
