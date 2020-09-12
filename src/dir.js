@@ -10,6 +10,8 @@ function addListItem(list, path, label) {
     list.appendChild(item);
 }
 
+document.getElementById("name").innerHTML = directory.name;
+
 for(let dir of directory.directories) {
     addListItem(directoryList, dir.path, dir.name);
 }

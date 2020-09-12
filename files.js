@@ -16,14 +16,17 @@ exports.getDirectory = (reqPath) => {
             }
             var path = getTruePath(pathInput);
             if(path) {
-                fs.readdir(decodeURIComponent(path), {
+                path = decodeURIComponent(path);
+                var dirName = path.substring(0, path.length - 1);
+                dirName = dirName.substring(dirName.lastIndexOf("/") + 1);
+                fs.readdir(path, {
                     withFileTypes: true
                 }, (err, files) => {
                     if(err) {
                         console.log(err);
                         reject({ statusCode: 500, message: "Could not load directory" });
                     }else {
-                        var dir = { type: "general", directories: [], files: [] };
+                        var dir = { name: dirName, type: "general", directories: [], files: [] };
                         var total = 0;
                         var typeTotals = {};
                         for(let file of files) {
