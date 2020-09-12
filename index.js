@@ -40,7 +40,7 @@ app.get("/dir/*", (req, res) => {
 });
 
 app.get("/file/*", (req, res) => {
-    files.getFile(req.path).then(file => {
+    files.getFile(req.path, req.query.thumb != undefined).then(file => {
         res.setHeader('Content-Type', file.type);
         res.end(file.data);
     }).catch(err => {

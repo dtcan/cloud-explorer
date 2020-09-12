@@ -19,6 +19,7 @@
   "dependencies": {
     "bootstrap": "^4.5.2",
     "express": "^4.17.1",
+    "md5-file": "^5.0.0",
     "mime-types": "^2.1.27",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

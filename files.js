@@ -1,5 +1,6 @@
 const fs = require("fs");
 const mime = require("mime-types");
+const image = require("./image");
 
 const rawJSON = fs.readFileSync("./paths.json");
 const paths = rawJSON ? JSON.parse(rawJSON) : undefined;
@@ -80,21 +81,28 @@ exports.getDirectory = (reqPath) => {
     });
 }
 
-exports.getFile = (reqPath) => {
+exports.getFile = (reqPath, thumb = false) => {
     return new Promise((resolve, reject) => {
         if(paths) {
             var path = getTruePath(reqPath.substring(6));
             if(path) {
+                path = decodeURIComponent(path);
                 var name = path.substring(path.lastIndexOf("/") + 1);
-                fs.readFile(decodeURIComponent(path), (err, data) => {
-                    if(err) {
-                        console.log(err);
-                        reject({ statusCode: 500, message: "Could not load file" });
-                    }else {
-                        var type = mime.lookup(name) || "application/octet-stream";
+                var type = mime.lookup(name) || "application/octet-stream";
+                if(thumb && type.startsWith("image")) {
+                    image.getThumbnail(path).then(data => {
                         resolve({ data, type });
-                    }
-                });
+                    }).catch(reject);
+                }else {
+                    fs.readFile(decodeURIComponent(path), (err, data) => {
+                        if(err) {
+                            console.log(err);
+                            reject({ statusCode: 500, message: "Could not load file" });
+                        }else {
+                            resolve({ data, type });
+                        }
+                    });
+                }
             }else {
                 reject({ statusCode: 400, message: "Invalid path" });
             }
