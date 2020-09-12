@@ -7,6 +7,20 @@ const paths = rawJSON ? JSON.parse(rawJSON) : undefined;
 const IGNORE = /.*\.ini/;
 const TYPE_THRESHOLD = 0.9;
 
+exports.getPaths = () => {
+    return new Promise((resolve, reject) => {
+        if(paths) {
+            resolve(paths.map(path => {
+                return {
+                    name: path.name
+                };
+            }));
+        }else {
+            reject({ statusCode: 500, message: "Could not load 'paths.json'" });
+        }
+    });
+}
+
 exports.getDirectory = (reqPath) => {
     return new Promise((resolve, reject) => {
         if(paths) {

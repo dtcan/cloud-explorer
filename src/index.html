@@ -3,9 +3,12 @@
     <head>
         <title>Cloud Explorer</title>
         <meta charset="UTF-8">
+        <script>
+            const paths = JSON.parse("{{ paths }}");
+        </script>
     </head>
     <body>
         <h1>Cloud Explorer</h1>
-        <p>Paths go here</p>
+        <ul id="path-list"></ul>
     </body>
 </html>

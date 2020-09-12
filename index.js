@@ -12,8 +12,12 @@ app.get("/", (req, res) => {
             console.log(err);
             res.status(500).end("Error: Could not load page");
         }else {
-            res.setHeader('Content-Type', 'text/html');
-            res.end(data);
+            files.getPaths().then(paths => {
+                res.setHeader('Content-Type', 'text/html');
+                res.end(data.toString().replace("{{ paths }}", JSON.stringify(paths).replace(/"/g, "\\\"")));
+            }).catch(err => {
+                res.status(err.statusCode || 500).end(err.message || "Unknown error");
+            });
         }
     });
 });
