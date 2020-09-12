@@ -1,8 +1,19 @@
-import { addListItem } from "./main";
+import React from "react";
+import ReactDOM from "react-dom";
+import { Header } from "./main";
+import { List, ListItem, ListItemText } from "@material-ui/core";
 
-const pathList = document.getElementById("path-list");
-
-
-for(var i = 0; i < paths.length; i++) {
-    addListItem(pathList, "/dir/" + i, paths[i].name);
+function App() {
+    return <>
+        <Header title="Cloud Explorer" />
+        <List>
+            {paths.map((path, i) => (
+                <ListItem button component="a" href={"/dir/" + i}>
+                    <ListItemText primary={path.name} />
+                </ListItem>
+            ))}
+        </List>
+    </>;
 }
+
+ReactDOM.render(<App />, document.querySelector("#app"));

@@ -1,3 +1,19 @@
+import React from "react";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
+
+export class Header extends React.Component {
+    render() {
+        return <>
+            <AppBar position="fixed">
+                <Toolbar>
+                    <Typography variant="h6">{this.props.title}</Typography>
+                </Toolbar>
+            </AppBar>
+            <Toolbar />
+        </>;
+    }
+}
+
 export function addListItem(list, path, label) {
     var item = document.createElement("li");
     var link = document.createElement("a");
