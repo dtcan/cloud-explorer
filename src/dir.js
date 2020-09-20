@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Header } from "./main";
-import { Icon, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { AppBar, Toolbar, Icon, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core";
 
 const ICON_MAP = {
     "application": "insert_drive_file",
@@ -9,6 +9,59 @@ const ICON_MAP = {
     "directory": "folder",
     "image": "photo",
     "video": "slideshow"
+}
+
+class AudioPlayer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { name: "", playing: false };
+        this.audioElement = document.querySelector("#audio");
+    }
+    loadAudio(file) {
+        this.audioElement.pause();
+        this.audioElement.src = file.path;
+        this.audioElement.load();
+        this.audioElement.play();
+        this.setState({ name: file.name, playing: true });
+    }
+    togglePlay() {
+        this.setState(state => {
+            if(state.playing) {
+                this.audioElement.pause();
+            }else {
+                this.audioElement.play();
+            }
+            return {
+                name: state.name,
+                playing: !state.playing
+            }
+        });
+    }
+    unloadAudio() {
+        this.audioElement.pause();
+        this.audioElement.src = undefined;
+        this.audioElement.load();
+        this.setState({ name: "", playing: false });
+    }
+    render() {
+        return <>
+            <Toolbar />
+            <AppBar position="fixed" style={{ top: "auto", bottom: 0 }}>
+                {
+                    this.state.name ?
+                    <Toolbar>
+                        <IconButton edge="start" color="inherit" onClick={this.togglePlay.bind(this)}>
+                            <Icon>{ this.state.playing ? "pause" : "play_arrow" }</Icon>
+                        </IconButton>
+                        <IconButton edge="start" color="inherit" onClick={this.unloadAudio.bind(this)}>
+                            <Icon>stop</Icon>
+                        </IconButton>
+                        <Typography>{this.state.name}</Typography>
+                    </Toolbar> : <></>
+                }
+            </AppBar>
+        </>
+    }
 }
 
 class App extends React.Component {
@@ -23,7 +76,11 @@ class App extends React.Component {
         }
     }
     onFileClick(file) {
-        window.location = file.path;
+        if(this.audioPlayer && file.type.startsWith("audio")) {
+            this.audioPlayer.loadAudio(file);
+        }else {
+            console.log(file);
+        }
     }
     render() {
         return <>
@@ -49,9 +106,13 @@ class App extends React.Component {
                     )
                 }))}
             </List>
+            <div id="extra"></div>
         </>;
     }
 }
 
 document.title = directory.name + " - " + document.title;
-ReactDOM.render(<App />, document.querySelector("#app"));
+var app = ReactDOM.render(<App />, document.querySelector("#app"));
+if(directory.type == "audio") {
+    app.audioPlayer = ReactDOM.render(<AudioPlayer />, document.querySelector("#extra"));
+}
