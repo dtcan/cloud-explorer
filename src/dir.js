@@ -54,7 +54,7 @@ class AudioPlayer extends React.Component {
         this.setState({ name: "", progress: 0 });
     }
     seekTo(percent) {
-        this.audioElement.fastSeek(this.audioElement.duration * percent);
+        this.audioElement.currentTime = this.audioElement.duration * percent;
         this.updateProgress();
     }
     render() {
