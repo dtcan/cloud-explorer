@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Header } from "./main";
-import { AppBar, Toolbar, Icon, IconButton, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core";
+import { AppBar, Grid, Icon, IconButton, List, ListItem, ListItemIcon, ListItemText, Slider, Toolbar, Typography } from "@material-ui/core";
 
 const ICON_MAP = {
     "application": "insert_drive_file",
@@ -14,26 +14,36 @@ const ICON_MAP = {
 class AudioPlayer extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { name: "", playing: false };
+        this.state = { name: "", progress: 0 };
         this.audioElement = document.querySelector("#audio");
+        this.audioElement.addEventListener("timeupdate", this.updateProgress.bind(this));
+    }
+    updateProgress() {
+        var progress = this.audioElement.duration ? this.audioElement.currentTime / this.audioElement.duration : 0;
+        this.setState(state => {
+            return {
+                name: state.name,
+                progress: progress
+            }
+        });
     }
     loadAudio(file) {
         this.audioElement.pause();
         this.audioElement.src = file.path;
         this.audioElement.load();
         this.audioElement.play();
-        this.setState({ name: file.name, playing: true });
+        this.setState({ name: file.name, progress: 0 });
     }
     togglePlay() {
         this.setState(state => {
-            if(state.playing) {
-                this.audioElement.pause();
-            }else {
+            if(this.audioElement.paused) {
                 this.audioElement.play();
+            }else {
+                this.audioElement.pause();
             }
             return {
                 name: state.name,
-                playing: !state.playing
+                progress: state.progress
             }
         });
     }
@@ -41,22 +51,41 @@ class AudioPlayer extends React.Component {
         this.audioElement.pause();
         this.audioElement.src = undefined;
         this.audioElement.load();
-        this.setState({ name: "", playing: false });
+        this.setState({ name: "", progress: 0 });
+    }
+    seekTo(percent) {
+        this.audioElement.fastSeek(this.audioElement.duration * percent);
+        this.updateProgress();
     }
     render() {
+        const SEEK_RESOLUTION = 1000;
         return <>
             <Toolbar />
             <AppBar position="fixed" style={{ top: "auto", bottom: 0 }}>
                 {
                     this.state.name ?
                     <Toolbar>
-                        <IconButton edge="start" color="inherit" onClick={this.togglePlay.bind(this)}>
-                            <Icon>{ this.state.playing ? "pause" : "play_arrow" }</Icon>
-                        </IconButton>
-                        <IconButton edge="start" color="inherit" onClick={this.unloadAudio.bind(this)}>
-                            <Icon>stop</Icon>
-                        </IconButton>
-                        <Typography>{this.state.name}</Typography>
+                        <Grid container direction="column" justify="center" alignItems="center">
+                            <Grid item style={{ padding: 10 }}>
+                                <Typography style={{ textAlign: "center" }}>{this.state.name}</Typography>
+                            </Grid>
+                            <Grid container item direction="row" justify="center" alignItems="center">
+                                <Grid item>
+                                    <IconButton edge="start" color="inherit" onClick={this.togglePlay.bind(this)}>
+                                        <Icon>{ this.audioElement.paused ? "play_arrow" : "pause" }</Icon>
+                                    </IconButton>
+                                    <IconButton edge="start" color="inherit" onClick={this.unloadAudio.bind(this)}>
+                                        <Icon>stop</Icon>
+                                    </IconButton>
+                                </Grid>
+                                <Grid item xs={9}>
+                                    <Slider
+                                        color="secondary" style={{ width: "100%" }} aria-labelledby="continuous-slider"
+                                        max={SEEK_RESOLUTION} value={this.state.progress * SEEK_RESOLUTION}
+                                        onChange={(_,v) => { this.seekTo(v / SEEK_RESOLUTION) }} />
+                                </Grid>
+                            </Grid>
+                        </Grid>
                     </Toolbar> : <></>
                 }
             </AppBar>
