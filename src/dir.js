@@ -27,7 +27,7 @@ class AudioPlayer extends React.Component {
             }
         });
     }
-    loadAudio(dirName, file) {
+    loadAudio(file) {
         this.audioElement.pause();
         this.audioElement.src = file.path;
         this.audioElement.load();
@@ -35,7 +35,7 @@ class AudioPlayer extends React.Component {
         if('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: file.name,
-                album: dirName
+                album: directory.name
             });
         }
         this.setState({ name: file.name, progress: 0 });
@@ -112,7 +112,7 @@ class App extends React.Component {
     }
     onFileClick(file) {
         if(this.audioPlayer && file.type.startsWith("audio")) {
-            this.audioPlayer.loadAudio(directory.name, file);
+            this.audioPlayer.loadAudio(file);
         }else {
             console.log(file);
         }
