@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Header } from "./main";
-import { AppBar, Grid, Icon, IconButton, List, ListItem, ListItemIcon, ListItemText, Slider, Toolbar, Typography } from "@material-ui/core";
+import { Accordion, AccordionSummary, AccordionDetails, AppBar, ButtonBase, Grid, GridList, GridListTile, Icon, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, Slider, Toolbar, Typography } from "@material-ui/core";
 
 const ICON_MAP = {
     "application": "insert_drive_file",
@@ -103,44 +103,101 @@ class App extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = { windowWidth: window.innerWidth };
         this.parent = directory.path.substring(0, directory.path.lastIndexOf("/") + 1);
         if(this.parent.length > 0) {
             this.parent = "/dir/" + this.parent;
         }else {
             this.parent = "/";
         }
+        window.addEventListener("resize", () => { this.setState({ windowWidth: window.innerWidth }); });
     }
     onFileClick(file) {
         if(this.audioPlayer && file.type.startsWith("audio")) {
             this.audioPlayer.loadAudio(file);
         }else {
-            console.log(file);
+            window.location = file.path;
         }
     }
     render() {
+        const CELL_HEIGHT = 256;
+        var columns = Math.floor(this.state.windowWidth / CELL_HEIGHT);
+        var filesList = directory.files;
+        if(directory.type == "image") {
+            filesList = filesList.filter(file => !file.type.startsWith("image"));
+        }
         return <>
             <Header title={directory.name} back={this.parent} />
-            <List>
+            <Grid container spacing={2}>
                 {directory.directories.map(dir => (
-                    <ListItem button component="a" href={dir.path}>
-                        <ListItemIcon>
-                            <Icon>{ICON_MAP["directory"]}</Icon>
-                        </ListItemIcon>
-                        <ListItemText primary={dir.name} />
-                    </ListItem>
-                ))
-                .concat(directory.files.map(file => {
-                    const fileConst = file;
-                    return (
-                        <ListItem button onClick={() => { this.onFileClick(fileConst) }}>
-                            <ListItemIcon>
-                                <Icon>{ICON_MAP[file.type.substring(0, file.type.indexOf("/"))] || ICON_MAP["application"]}</Icon>
-                            </ListItemIcon>
-                            <ListItemText primary={file.name} />
-                        </ListItem>
-                    )
-                }))}
-            </List>
+                    <Grid item>
+                        <ButtonBase component="a" href={dir.path}>
+                            <Paper elevation={2} style={{ padding: 10 }}>
+                                <Grid container spacing={1}>
+                                    <Grid item>
+                                        <Icon>{ICON_MAP["directory"]}</Icon>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography>{dir.name}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </ButtonBase>
+                    </Grid>
+                ))}
+            </Grid>
+            {
+                directory.type == "image" ? <>
+                    {filesList.length > 0 ?
+                    <div style={{ padding: 10 }}>
+                        <Accordion>
+                            <AccordionSummary expandIcon={<Icon>expand_more</Icon>}>
+                                <Typography>Other files</Typography>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                                <List style={{ width: "100%" }}>
+                                    {filesList.map(file => {
+                                        const fileConst = file;
+                                        return (
+                                            <ListItem button onClick={() => { this.onFileClick(fileConst) }}>
+                                                <ListItemIcon>
+                                                    <Icon>{ICON_MAP[file.type.substring(0, file.type.indexOf("/"))] || ICON_MAP["application"]}</Icon>
+                                                </ListItemIcon>
+                                                <ListItemText primary={file.name} />
+                                            </ListItem>
+                                        )
+                                    })}
+                                </List>
+                            </AccordionDetails>
+                        </Accordion>
+                    </div> : <></>}
+                    <GridList cellHeight={CELL_HEIGHT} cols={columns}>
+                        {directory.files
+                            .filter(file => file.type.startsWith("image"))
+                            .map(img => {
+                                const imgConst = img;
+                                return (
+                                    <GridListTile style={{ cursor: "pointer" }}>
+                                        <img src={img.path+"?thumb"} onClick={() => { this.onFileClick(imgConst) }} />
+                                    </GridListTile>
+                                )
+                            })}
+                    </GridList>
+                </>
+                : <List>
+                    {filesList.map(file => {
+                        const fileConst = file;
+                        return (
+                            <ListItem button onClick={() => { this.onFileClick(fileConst) }}>
+                                <ListItemIcon>
+                                    <Icon>{ICON_MAP[file.type.substring(0, file.type.indexOf("/"))] || ICON_MAP["application"]}</Icon>
+                                </ListItemIcon>
+                                <ListItemText primary={file.name} />
+                            </ListItem>
+                        )
+                    })}
+                </List>
+            }
             <div id="extra"></div>
         </>;
     }
