@@ -43,7 +43,6 @@ exports.getThumbnail = (path) => {
 }
 
 function limitThumbnails() {
-    console.log("limit start");
     fs.readdir("thumb", (err, files) => {
         if(err) {
             console.log("Error while limiting thumbnails:", err);
