@@ -1,5 +1,5 @@
 # cloud-explorer
-An express server that acts as a file explorer for local files on the server
+An express server that acts as a file explorer for local files on the server. A demo can be found [here](https://dtcan.dev/projects/cloud-explorer/demo).
 
 ## Dependencies
 This project requires Node.js and ImageMagick.
