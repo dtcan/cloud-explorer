@@ -6,7 +6,7 @@ const rawJSON = fs.readFileSync("./config.json");
 const config = rawJSON ? JSON.parse(rawJSON) : undefined;
 
 const IGNORE = /.*\.ini/;
-const TYPE_THRESHOLD = 0.9;
+const TYPE_THRESHOLD = 0.5;
 
 
 function getRoot() {
