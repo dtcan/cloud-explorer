@@ -47,5 +47,5 @@ This will run an express server which will serve the front-end and local files. 
 PORT=4567 node .
 ```
 
-# Configuration
+## Configuration
 Aside from choosing the paths, you can also set the `url_root` variable in `config.json`, which will set the parent directory that will be prepended to all URLs. This is useful if you intend to have this explorer be accessible from a subdirectory like `example.com/explorer/` rather than from the root directory `example.com`.
