@@ -14,7 +14,9 @@ app.get("/", (req, res) => {
         }else {
             files.getPaths().then(paths => {
                 res.setHeader('Content-Type', 'text/html');
-                res.end(data.toString().replace("{{ paths }}", JSON.stringify(paths).replace(/"/g, "\\\"")));
+                res.end(data.toString()
+                    .replace(/{{ root }}/g, files.getRoot())
+                    .replace("{{ paths }}", JSON.stringify(paths).replace(/"/g, "\\\"")));
             }).catch(err => {
                 res.status(err.statusCode || 500).end(err.message || "Unknown error");
             });
@@ -31,7 +33,9 @@ app.get("/dir/*", (req, res) => {
         }else {
             files.getDirectory(req.path).then(dir => {
                 res.setHeader('Content-Type', 'text/html');
-                res.end(data.toString().replace("{{ dir }}", JSON.stringify(dir).replace(/"/g, "\\\"")));
+                res.end(data.toString()
+                    .replace(/{{ root }}/g, files.getRoot())
+                    .replace("{{ dir }}", JSON.stringify(dir).replace(/"/g, "\\\"")));
             }).catch(err => {
                 res.status(err.statusCode || 500).end(err.message || "Unknown error");
             });

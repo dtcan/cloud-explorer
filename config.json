@@ -1,0 +1,9 @@
+{
+    "url_root": "/",
+    "paths": [
+        {
+            "name": "root",
+            "path": "/"
+        }
+    ]
+}

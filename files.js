@@ -2,29 +2,39 @@ const fs = require("fs");
 const mime = require("mime-types");
 const image = require("./image");
 
-const rawJSON = fs.readFileSync("./paths.json");
-const paths = rawJSON ? JSON.parse(rawJSON) : undefined;
+const rawJSON = fs.readFileSync("./config.json");
+const config = rawJSON ? JSON.parse(rawJSON) : undefined;
 
 const IGNORE = /.*\.ini/;
 const TYPE_THRESHOLD = 0.9;
 
+
+function getRoot() {
+    var root = config ? config.url_root.replace(/\\/g, "/") : "/"
+    if(root[root.length - 1] != "/") {
+        root += "/";
+    }
+    return root;
+}
+exports.getRoot = getRoot;
+
 exports.getPaths = () => {
     return new Promise((resolve, reject) => {
-        if(paths) {
-            resolve(paths.map(path => {
+        if(config && config.paths) {
+            resolve(config.paths.map(path => {
                 return {
                     name: path.name
                 };
             }));
         }else {
-            reject({ statusCode: 500, message: "Could not load 'paths.json'" });
+            reject({ statusCode: 500, message: "Could not load 'config.json'" });
         }
     });
 }
 
 exports.getDirectory = (reqPath) => {
     return new Promise((resolve, reject) => {
-        if(paths) {
+        if(config && config.paths) {
             var pathInput = reqPath.substring(5);
             if(pathInput[pathInput.length - 1] != "/") {
                 pathInput += "/";
@@ -47,7 +57,7 @@ exports.getDirectory = (reqPath) => {
                         for(let file of files) {
                             if(file.isDirectory()) {
                                 dir.directories.push({
-                                    path: "/dir/" + pathInput + file.name,
+                                    path: getRoot() + "dir/" + pathInput + file.name,
                                     name: file.name,
                                     type: "directory"
                                 });
@@ -57,7 +67,7 @@ exports.getDirectory = (reqPath) => {
                                 total++;
                                 typeTotals[dirType] = (typeTotals[dirType] || 0) + 1;
                                 dir.files.push({
-                                    path: "/file/" + pathInput + file.name,
+                                    path: getRoot() + "file/" + pathInput + file.name,
                                     name: file.name,
                                     type: type || "application/octet-stream"
                                 });
@@ -76,14 +86,14 @@ exports.getDirectory = (reqPath) => {
                 reject({ statusCode: 400, message: "Invalid path" });
             }
         }else {
-            reject({ statusCode: 500, message: "Could not load 'paths.json'" });
+            reject({ statusCode: 500, message: "Could not load 'config.json'" });
         }
     });
 }
 
 exports.getFile = (reqPath, thumb = false) => {
     return new Promise((resolve, reject) => {
-        if(paths) {
+        if(config && config.paths) {
             var path = getTruePath(reqPath.substring(6));
             if(path) {
                 path = decodeURIComponent(path);
@@ -107,18 +117,18 @@ exports.getFile = (reqPath, thumb = false) => {
                 reject({ statusCode: 400, message: "Invalid path" });
             }
         }else {
-            reject({ statusCode: 500, message: "Could not load 'paths.json'" });
+            reject({ statusCode: 500, message: "Could not load 'config.json'" });
         }
     });
 }
 
 function getTruePath(pathInput) {
-    if(paths) {
+    if(config && config.paths) {
         var sep = pathInput.indexOf("/");
         if(sep >= 0) {
             var index = +pathInput.substring(0, sep);
             var subdir = pathInput.substring(sep + 1);
-            var pathData = paths[index];
+            var pathData = config.paths[index];
             if(pathData) {
                 var path = pathData.path.replace(/\\/g, "/") || "/";
                 if(path[path.length - 1] != "/") {

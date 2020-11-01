@@ -8,7 +8,7 @@ function App() {
         <Header title="Cloud Explorer" />
         <List>
             {paths.map((path, i) => (
-                <ListItem button component="a" href={"/dir/" + i}>
+                <ListItem button component="a" href={rootDir + "dir/" + i}>
                     <ListItemText primary={path.name} />
                 </ListItem>
             ))}

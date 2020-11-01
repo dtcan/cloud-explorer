@@ -106,9 +106,9 @@ class App extends React.Component {
         this.state = { windowWidth: window.innerWidth };
         this.parent = directory.path.substring(0, directory.path.lastIndexOf("/") + 1);
         if(this.parent.length > 0) {
-            this.parent = "/dir/" + this.parent;
+            this.parent = rootDir + "dir/" + this.parent;
         }else {
-            this.parent = "/";
+            this.parent = rootDir;
         }
         window.addEventListener("resize", () => { this.setState({ windowWidth: window.innerWidth }); });
     }
