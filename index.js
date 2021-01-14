@@ -24,6 +24,18 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/login", (req, res) => {
+    fs.readFile("./dist/login.html", "utf-8", (err, data) => {
+        if(err) {
+            console.log(err);
+            res.status(500).end("Error: Could not load page");
+        }else {
+            res.setHeader('Content-Type', 'text/html');
+            res.end(data.toString().replace(/{{ root }}/g, files.getRoot()));
+        }
+    });
+});
+
 app.get("/dir/*", (req, res) => {
     fs.readFile("./dist/dir.html", "utf-8", (err, data) => {
         if(err) {
