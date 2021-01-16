@@ -1,10 +1,36 @@
 const fs = require("fs");
 const express = require("express");
+const bodyParser = require("body-parser");
 const files = require("./files");
+const auth = require("./auth");
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
+const encodedParser = bodyParser.urlencoded({ extended: false });
+
+app.post("/auth", encodedParser, (req, res) => {
+    var password = req.body.pass;
+
+    res.setHeader('Content-Type', 'application/json');
+    auth.getToken(password).then(token => {
+        res.end(JSON.stringify({ success: true, result: { token } }));
+    }).catch(err => {
+        res.status(err.statusCode || 500).end(JSON.stringify({ success: false, error: err.message }));
+    });
+});
+
+app.get("/login", (req, res) => {
+    fs.readFile("./dist/login.html", "utf-8", (err, data) => {
+        if(err) {
+            console.log(err);
+            res.status(500).end("Error: Could not load page");
+        }else {
+            res.setHeader('Content-Type', 'text/html');
+            res.end(data.toString().replace(/{{ root }}/g, files.getRoot()));
+        }
+    });
+});
 
 app.get("/", (req, res) => {
     fs.readFile("./dist/index.html", "utf-8", (err, data) => {
@@ -20,18 +46,6 @@ app.get("/", (req, res) => {
             }).catch(err => {
                 res.status(err.statusCode || 500).end(err.message || "Unknown error");
             });
-        }
-    });
-});
-
-app.get("/login", (req, res) => {
-    fs.readFile("./dist/login.html", "utf-8", (err, data) => {
-        if(err) {
-            console.log(err);
-            res.status(500).end("Error: Could not load page");
-        }else {
-            res.setHeader('Content-Type', 'text/html');
-            res.end(data.toString().replace(/{{ root }}/g, files.getRoot()));
         }
     });
 });
