@@ -13,7 +13,7 @@ function App() {
     >
         <Grid item xs={12}>
             <Paper style={{ padding: 20 }}>
-                <Typography variant="h3">Cloud Explorer</Typography>
+                <Typography variant="h3">{title}</Typography>
                 <form onSubmit={e => {
                         e.preventDefault();
                         var data = new FormData(e.target);

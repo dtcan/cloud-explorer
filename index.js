@@ -7,6 +7,9 @@ const cookieParser = require("cookie-parser");
 const files = require("./files");
 const auth = require("./auth");
 
+const rawJSON = fs.readFileSync("./config.json");
+const config = rawJSON ? JSON.parse(rawJSON) : undefined;
+
 const PORT = process.env.PORT || 8080;
 
 
@@ -34,7 +37,9 @@ app.get("/login", (req, res) => {
                 res.status(500).end("Error: Could not load page");
             }else {
                 res.setHeader('Content-Type', 'text/html');
-                res.end(data.toString().replace(/{{ root }}/g, files.getRoot()));
+                res.end(data.toString()
+                    .replace(/{{ root }}/g, files.getRoot())
+                    .replace(/{{ title }}/g, config.title || "Cloud Explorer"));
             }
         });
     });
@@ -51,6 +56,7 @@ app.get("/", (req, res) => {
                     res.setHeader('Content-Type', 'text/html');
                     res.end(data.toString()
                         .replace(/{{ root }}/g, files.getRoot())
+                        .replace(/{{ title }}/g, config.title || "Cloud Explorer")
                         .replace("{{ paths }}", JSON.stringify(paths).replace(/"/g, "\\\"")));
                 }).catch(err => {
                     res.status(err.statusCode || 500).end(err.message || "Unknown error");
@@ -72,6 +78,7 @@ app.get("/dir/*", (req, res) => {
                     res.setHeader('Content-Type', 'text/html');
                     res.end(data.toString()
                         .replace(/{{ root }}/g, files.getRoot())
+                        .replace(/{{ title }}/g, config.title || "Cloud Explorer")
                         .replace("{{ dir }}", JSON.stringify(dir).replace(/"/g, "\\\"")));
                 }).catch(err => {
                     res.status(err.statusCode || 500).end(err.message || "Unknown error");

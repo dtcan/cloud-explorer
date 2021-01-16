@@ -5,7 +5,7 @@ import { List, ListItem, ListItemText } from "@material-ui/core";
 
 function App() {
     return <>
-        <Header title="Cloud Explorer" />
+        <Header title={title} />
         <List>
             {paths.map((path, i) => (
                 <ListItem button component="a" href={rootDir + "dir/" + i}>

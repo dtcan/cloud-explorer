@@ -30,6 +30,15 @@ PORT=4567 node .
 ```
 
 ## Configuration
+### Title
+You can set the title of the explorer in the `config.json` file.
+```
+{
+...
+    "title": "Cloud Explorer",
+...
+}
+```
 ### Paths
 Edit the `config.json` file to list the directories that you want to access remotely in the `paths` array. For each directory, give the name you want displayed and an absolute path to the directory. Here is an example for a Windows machine:
 ```
@@ -44,7 +53,7 @@ Edit the `config.json` file to list the directories that you want to access remo
             "name": "Pictures",
             "path": "C:\\Users\\user\\Pictures"
         }
-    ]
+    ],
 ...
 }
 ```
