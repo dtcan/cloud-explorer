@@ -21,6 +21,10 @@ module.exports = {
             chunks: ['index']
         }),
         new HtmlWebpackPlugin({
+            template: "./src/redirect.html",
+            filename: "./redirect.html"
+        }),
+        new HtmlWebpackPlugin({
             template: "./src/login.html",
             filename: "./login.html",
             chunks: ['login']
