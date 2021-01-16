@@ -31,9 +31,9 @@ Edit the `config.json` file to list the directories that you want to access remo
 ```
 
 ## Build
-Run this command:
+Run this command from the `cloud-explorer` directory:
 ```shell
-webpack
+npx webpack
 ```
 This will use webpack to create a bundle for the front-end. You need to run this command again if you make changes to files in the `src` directory.
 
