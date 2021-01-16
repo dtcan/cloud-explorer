@@ -14,6 +14,7 @@ app.post("/auth", encodedParser, (req, res) => {
 
     res.setHeader('Content-Type', 'application/json');
     auth.getToken(password).then(token => {
+        res.cookie("token", token);
         res.end(JSON.stringify({ success: true, result: { token } }));
     }).catch(err => {
         res.status(err.statusCode || 500).end(JSON.stringify({ success: false, error: err.message }));

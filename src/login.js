@@ -14,8 +14,30 @@ function App() {
         <Grid item xs={12}>
             <Paper style={{ padding: 20 }}>
                 <Typography variant="h3">Cloud Explorer</Typography>
-                <form>
-                    <TextField id="password" type="password" label="Password" style={{ width: "100%" }} />
+                <form onSubmit={e => {
+                        e.preventDefault();
+                        var data = new FormData(e.target);
+                        
+                        fetch(rootDir + "auth", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': "application/x-www-form-urlencoded"
+                            },
+                            body: "pass="+data.get("pass")
+                        }).then(r => r.json())
+                        .then(response => {
+                            if(response && response.success) {
+                                document.location = rootDir;
+                            }else {
+                                alert(response.error || "Unknown error");
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            alert("Request failed. Check the console for details.");
+                        });
+                    }}>
+                    <TextField name="pass" type="password" label="Password" style={{ width: "100%" }} />
                 </form>
             </Paper>
         </Grid>
