@@ -4,7 +4,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const PAYLOAD = "authenticated";
-const SECRET_KEY = process.env.SECRET_KEY || "SECRET_KEY";
+const SECRET_KEY = (() => {
+    var key = "";
+    for(var i = 0; i < 5; i++) {
+        key += Math.random().toString(36).substring(2,12);
+    }
+    return key;
+})();
 
 
 exports.getToken = password => {
